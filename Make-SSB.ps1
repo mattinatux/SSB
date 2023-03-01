@@ -118,7 +118,9 @@ $orderedEventList = $revisedEventList | Select-Object dow,date,time,title,notes 
 $orderedEventListHTML = $orderedEventList | ConvertTo-Html -Fragment -Property dow, date, time, title, notes
 
 # Count of Events for this week and next week
-$eventCounts = Get-CountOfEvents -revisedEventList $revisedEventList
+# 20230301 strips events that end with a degree symbol (long-press '0' on iOS keyboard) from the count, but
+# with benefit of keeping on the calendar list
+$eventCounts = Get-CountOfEvents -revisedEventList ( $revisedEventList | Where-Object {$_.notes -notlike "*°"} )
 $numThisWk = $eventCounts.thisWeek
 $numNextWk = $eventCounts.nextWeek
 
